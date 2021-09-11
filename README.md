@@ -32,3 +32,9 @@ Run the bot with
 ```
 pipenv run python run.py
 ```
+
+## Dump database to txt
+I also added a small utility to create a .txt file from the current database. Just run:
+```
+pipenv run python dump_db.py
+```
