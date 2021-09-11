@@ -23,6 +23,7 @@ with open(sys.argv[1], 'r') as f:
     for line in f.readlines():
         try:
             cur.execute("INSERT INTO bans VALUES (?)", (line.strip(),))
+            print(f"Added {line}")
         except sqlite3.IntegrityError as e:
             print(f"[Exception] {e} | {line.strip()}")
 
