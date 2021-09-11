@@ -1,0 +1,6 @@
+.env
+bans.db
+
+# IDE stuff
+.vscode
+.vscode/*
