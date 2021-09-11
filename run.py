@@ -1,6 +1,6 @@
 import os
 from twitchio.ext import commands
-from twitchio import Message, Channel, Chatter
+from twitchio import Message, Channel, Chatter, IRCCooldownError
 import sqlite3
 import time
 import re
@@ -85,6 +85,8 @@ class Bot(commands.Bot):
             try:
                 await channel.send(f"/ban {nickname}")
                 time.sleep(1 / msg_per_sec)
+            except IRCCooldownError:
+                await channel.send("Sorry, the bot somehow reached the Rate Limit (is another command running?). I tried my best to avoid it but I was wrong... Feel free to report this")
             except Exception:
                 # Yes this is avoidable atm, but in case I add something I dont want to forget about it
                 self.channels_busy.remove(channel.name)
