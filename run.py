@@ -58,7 +58,7 @@ class Bot(commands.Bot):
     @commands.command(aliases=["init"])
     async def run_bans(self, ctx: commands.Context):
         if not self.bot_is_mod(ctx):
-            ctx.send("Cannot run ban commands as not a mod")
+            await ctx.send("Cannot run ban commands as not a mod")
             return
 
         if not ctx.author.is_mod:
@@ -98,7 +98,7 @@ class Bot(commands.Bot):
     @commands.command(aliases=["ban"])
     async def add_ban(self, ctx: commands.Context):
         if not self.bot_is_mod(ctx):
-            ctx.send("Cannot run ban commands as not a mod")
+            await ctx.send("Cannot run ban commands as not a mod")
             return
         
         if not ctx.author.is_mod:
@@ -131,7 +131,7 @@ class Bot(commands.Bot):
     @commands.command()
     async def check(self, ctx: commands.Context):
         if not self.bot_is_mod(ctx):
-            ctx.send("Cannot run ban commands as not a mod")
+            await ctx.send("Cannot run ban commands as not a mod")
             return
         
         if not ctx.author.is_mod:
@@ -150,7 +150,7 @@ class Bot(commands.Bot):
     @commands.command()
     async def please(self, ctx: commands.Context):
         if not self.bot_is_mod(ctx):
-            ctx.send("Cannot run ban commands as not a mod")
+            await ctx.send("Cannot run ban commands as not a mod")
             return
         
         if not ctx.author.is_mod:
@@ -171,11 +171,18 @@ class Bot(commands.Bot):
     
 
     def bot_is_mod(self, ctx: commands.Context):
+        return True
         user: Chatter
         for user in ctx.users:
-            if user.name == self.nick:
-                return user.is_mod
-        return True
+            if user.name == ctx.bot.nick:
+                if user.badges is None:
+                    return False
+                print(user.badges.keys())
+                if 'moderator' in user.badges.keys():
+                    print(user.badges['moderator'])
+                    badge: int = user.badges['moderator']
+                    return badge == 1
+        return False
 
 
 bot = Bot()
