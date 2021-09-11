@@ -51,7 +51,7 @@ class Bot(commands.Bot):
 
     @commands.command(aliases=["init"])
     async def run_bans(self, ctx: commands.Context):
-        bot = await ctx.get_user(self.nick)
+        bot = ctx.get_user(self.nick)
         if not bot.is_mod:
             ctx.send("Cannot run ban commands as not a mod")
             return
