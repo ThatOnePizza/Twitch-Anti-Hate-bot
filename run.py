@@ -2,10 +2,14 @@ import os
 from twitchio.ext import commands
 from twitchio import Message, Channel, Chatter
 import sqlite3
+import time
 import re
 
 
 regex = r"(h[o0][s5]{2,}[o0]*[0-9]*.*)|(h[o0][s5]t[0o]+[0-9]*.*)"
+# normally it's 100 per 30 seconds but to be certain and since we are sending a "Running..." command
+# we lower this by 2
+msg_per_sec = (98)/30
 
 
 class Bot(commands.Bot):
@@ -58,6 +62,8 @@ class Bot(commands.Bot):
 
         if not ctx.author.is_mod:
             return
+        
+        await ctx.send("Running...")
 
         cur = self.con.cursor()
 
@@ -69,6 +75,8 @@ class Bot(commands.Bot):
     async def ban_users(self, users: list, channel: Channel):
         for nickname in users:
             await channel.send(f"/ban {nickname}")
+            print(f"Banning {nickname}")
+            time.sleep(1 / msg_per_sec)
     
 
     @commands.command(aliases=["ban"])
@@ -80,6 +88,8 @@ class Bot(commands.Bot):
         
         if not ctx.author.is_mod:
             return
+        
+        await ctx.send("Running...")
         
         cur = self.con.cursor()
 
@@ -97,7 +107,8 @@ class Bot(commands.Bot):
                 print(f"{e} | {nickname}")
 
             self.con.commit()
-            await ctx.channel.send(f"/ban {nickname}")
+
+        await self.ban_users(nicknames, ctx.channel)
 
         await ctx.send(f"User/Users banned")
     
@@ -131,6 +142,8 @@ class Bot(commands.Bot):
         
         if not ctx.author.is_mod:
             return
+        
+        await ctx.send("Running...")
         
         users: set = ctx.users
         to_ban: list = []
