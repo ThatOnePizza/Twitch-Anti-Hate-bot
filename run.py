@@ -38,6 +38,7 @@ class Bot(commands.Bot):
         # Notify us when everything is ready!
         # We are logged in and ready to chat and use commands...
         print(f'Logged in as | {self.nick}')
+        print(f'Functioning in channels: {os.getenv("CHANNELS").split(" ")}')
 
 
     async def event_message(self, message: Message):
