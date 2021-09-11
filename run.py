@@ -57,8 +57,7 @@ class Bot(commands.Bot):
 
     @commands.command(aliases=["init"])
     async def run_bans(self, ctx: commands.Context):
-        bot = ctx.get_user(self.nick)
-        if not bot.is_mod:
+        if not self.bot_is_mod(ctx):
             ctx.send("Cannot run ban commands as not a mod")
             return
 
@@ -98,8 +97,7 @@ class Bot(commands.Bot):
 
     @commands.command(aliases=["ban"])
     async def add_ban(self, ctx: commands.Context):
-        curr_bot = ctx.get_user(self.nick)
-        if not curr_bot.is_mod:
+        if not self.bot_is_mod(ctx):
             ctx.send("Cannot run ban commands as not a mod")
             return
         
@@ -132,8 +130,7 @@ class Bot(commands.Bot):
 
     @commands.command()
     async def check(self, ctx: commands.Context):
-        curr_bot = ctx.get_user(self.nick)
-        if not curr_bot.is_mod:
+        if not self.bot_is_mod(ctx):
             ctx.send("Cannot run ban commands as not a mod")
             return
         
@@ -152,8 +149,7 @@ class Bot(commands.Bot):
 
     @commands.command()
     async def please(self, ctx: commands.Context):
-        curr_bot = ctx.get_user(self.nick)
-        if not curr_bot.is_mod:
+        if not self.bot_is_mod(ctx):
             ctx.send("Cannot run ban commands as not a mod")
             return
         
@@ -172,6 +168,14 @@ class Bot(commands.Bot):
         await self.ban_users(to_ban, ctx.channel)
         
         await ctx.send(f"Banned {len(to_ban)} users")
+    
+
+    def bot_is_mod(self, ctx: commands.Context):
+        user: Chatter
+        for user in ctx.users:
+            if user.name == self.nick:
+                return user.is_mod
+        return True
 
 
 bot = Bot()
