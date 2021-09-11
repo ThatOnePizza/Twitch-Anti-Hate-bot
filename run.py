@@ -13,6 +13,7 @@ msg_per_sec = (98)/30
 
 
 class Bot(commands.Bot):
+    channels_busy: list = []
 
     def __init__(self):
         super().__init__(
@@ -73,10 +74,23 @@ class Bot(commands.Bot):
         await ctx.send(f'Users banned')
     
     async def ban_users(self, users: list, channel: Channel):
+        if channel.name in self.channels_busy:
+            await channel.send("A command is already running in this channel. Please wait for that command to finish")
+        
+        # Yes, this is not thread safe
+        # No, I will not change it
+        self.channels_busy.append(channel.name)
+
         for nickname in users:
-            await channel.send(f"/ban {nickname}")
-            print(f"Banning {nickname}")
-            time.sleep(1 / msg_per_sec)
+            try:
+                await channel.send(f"/ban {nickname}")
+                time.sleep(1 / msg_per_sec)
+            except Exception:
+                # Yes this is avoidable atm, but in case I add something I dont want to forget about it
+                self.channels_busy.remove(channel.name)
+                return
+        
+        self.channels_busy.remove(channel.name)
     
 
     @commands.command(aliases=["ban"])
