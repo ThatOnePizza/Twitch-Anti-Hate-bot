@@ -86,7 +86,13 @@ class Bot(commands.Bot):
                 await channel.send(f"/ban {nickname}")
                 time.sleep(1 / msg_per_sec)
             except IRCCooldownError:
+                # Cannot send any messages for 30 minutes
+                print("Rate Limit reached, waiting 30 minutes")
+                time.sleep(30 * 60 + 1)
                 await channel.send("Sorry, the bot somehow reached the Rate Limit (is another command running?). I tried my best to avoid it but I was wrong... Feel free to report this")
+                time.sleep(1 / msg_per_sec)
+                await channel.send(f"/ban {nickname}")
+                time.sleep(1 / msg_per_sec)
             except Exception:
                 # Yes this is avoidable atm, but in case I add something I dont want to forget about it
                 self.channels_busy.remove(channel.name)
