@@ -65,12 +65,14 @@ class Bot(commands.Bot):
             return
         
         await ctx.send("Running...")
+        print(f"Running on channel {ctx.channel.name}")
 
         cur = self.con.cursor()
 
         bans_fetch = cur.execute('SELECT nickname FROM bans').fetchall()
         await self.ban_users([row[0] for row in bans_fetch], ctx.channel)
-        
+
+        print(f"Finished running on channel {ctx.channel.name}")
         await ctx.send(f'Users banned')
     
     async def ban_users(self, users: list, channel: Channel):
